@@ -28,7 +28,7 @@ int main() {
     auto engine = std::make_shared<Engine>();
     auto loader = std::make_shared<Loader>();
     loader->load_sprites("test_sprite.tms");
-    auto scene = std::make_shared<Scene>(loader);;
+    auto scene = std::make_shared<Scene>(loader);
     for (int i = 0; i < 26; ++i) {
         for (int j = 0; j < 13; ++j) {
             auto id = scene->createComponent(Position({i * 8 + 1, 1 + j * 4}), L"Testing");

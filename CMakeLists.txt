@@ -15,7 +15,9 @@ set(con_ops_sources con_script/ops/control/ConMove.cpp con_script/ops/control/Co
 set(con_script_sources con_script/data/Scope.h con_script/data/Stack.h con_script/data/Stack.cpp
         con_script/ConLocation.cpp ${con_ops_sources} con_script/ConFunction.cpp)
 
-set(chars_loader_sources loader/SpriteLoader/CharsLoader/CharsLoader1.cpp)
+set(utils_sources utils/unicode.cpp)
+
+set(chars_loader_sources loader/SpriteLoader/CharsLoader/CharsLoader1.cpp ${utils_sources})
 set(attrs_loader_sources loader/SpriteLoader/AttrsLoader/AttrsLoader1.cpp)
 set(frames_loader_sources loader/SpriteLoader/FramesLoader/FramesLoader1.cpp)
 set(animations_loader_sources loader/SpriteLoader/AnimationsLoader/AnimationsLoader1.cpp)

@@ -4,6 +4,7 @@
 
 #include "logger/Logger.h"
 #include "renderable/Frame.h"
+#include "utils/unicode.h"
 
 const std::wregex ID_REGEX(L"^id:(\\d+)$", std::wregex::optimize);
 const std::wregex SIZE_REGEX(L"^size:(\\d+)-(\\d+)$", std::wregex::optimize);
@@ -38,6 +39,7 @@ void CharsLoader1::parse(std::wifstream& file_stream, size_t count, ParsedState&
                 });
                 return;
             }
+            chars_line = convert_from_utf8(chars_line);
             if (chars_line.size() < max_line_length) {
                 Logger::error("Failed to parse chars line", {
                     {"ExpectedLineLength", std::to_string(max_line_length)},
