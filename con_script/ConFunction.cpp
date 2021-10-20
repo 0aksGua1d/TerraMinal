@@ -9,7 +9,7 @@ ConScript::ConFunction::ConFunction(std::shared_ptr<std::vector<std::shared_ptr<
         : ops(std::move(ops)), static_data(std::move(init_static_data)), extra_vars(extra_vars),
         arguments_count(arguments_count), return_count(return_count) {}
 
-void ConScript::ConFunction::call(std::vector<std::any>& arguments,
+void ConScript::ConFunction::call(const std::vector<std::any>& arguments,
                                   std::vector<std::any>& returns, std::shared_ptr<Stack> stack) {
     std::vector<std::any> variables(this->static_data.begin(), this->static_data.end());
     for (size_t i = 0; i < this->extra_vars; ++i) {

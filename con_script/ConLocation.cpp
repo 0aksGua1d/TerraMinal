@@ -32,9 +32,9 @@ namespace ConScript {
         return this->indexer;
     }
 
-    std::any ConLocation::get_value_arguments(std::vector<std::any>& arguments) {
+    std::any ConLocation::get_value_arguments(const std::vector<std::any>& arguments) {
         auto index = std::any_cast<int>(this->indexer);
-        return std::move(arguments[index]);
+        return arguments[index];
     }
 
     std::any ConLocation::get_value_returns(std::vector<std::any>& returns) {
@@ -49,7 +49,7 @@ namespace ConScript {
     }
 
 
-    std::any ConLocation::get_value(ConRegs& regs, std::vector<std::any>& variables, std::vector<std::any>& arguments,
+    std::any ConLocation::get_value(ConRegs& regs, std::vector<std::any>& variables, const std::vector<std::any>& arguments,
                                     std::vector<std::any>& returns, std::shared_ptr<Stack>& stack) {
         switch (this->section) {
             case SECTION::REGS:
@@ -101,11 +101,6 @@ namespace ConScript {
         variables[index] = value;
     }
 
-    void ConLocation::set_value_arguments(std::vector<std::any>& arguments, const std::any& value) {
-        auto index = std::any_cast<int>(this->indexer);
-        arguments[index] = value;
-    }
-
     void ConLocation::set_value_returns(std::vector<std::any>& returns, const std::any& value) {
         auto index = std::any_cast<int>(this->indexer);
         returns[index] = value;
@@ -116,7 +111,7 @@ namespace ConScript {
         stack->set_var(name, value);
     }
 
-    void ConLocation::set_value(ConRegs& regs, std::vector<std::any>& variables, std::vector<std::any>& arguments,
+    void ConLocation::set_value(ConRegs& regs, std::vector<std::any>& variables, const std::vector<std::any>& arguments,
                                 std::vector<std::any>& returns, std::shared_ptr<Stack>& stack, const std::any& value) {
         switch (this->section) {
             case SECTION::REGS:
@@ -127,14 +122,14 @@ namespace ConScript {
                 break;
             case SECTION::CONSTS:
                 break;
-            case SECTION::ARGUMENTS:
-                this->set_value_arguments(arguments, value);
-                break;
             case SECTION::RETURNS:
                 this->set_value_returns(returns, value);
                 break;
             case SECTION::STACK:
                 this->set_value_stack(stack, value);
+                break;
+            case SECTION::ARGUMENTS:
+                // arguments are constant
                 break;
         }
     }

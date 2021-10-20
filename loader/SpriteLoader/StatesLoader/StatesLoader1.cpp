@@ -56,19 +56,17 @@ static std::shared_ptr<Scope> get_default_state_scope() {
         std::vector<std::any> init_data{};
         auto ops = std::make_shared<std::vector<std::shared_ptr<ConOp>>>();
 
-        ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpIntMapGet>(
+        ops->push_back(std::make_shared<ConOpIntMapGet>(
                 ConLocation(ConLocation::SECTION::STACK, (std::wstring)L"frame_callbacks"),
                 ConLocation(ConLocation::SECTION::ARGUMENTS, 0),
-                ConLocation(ConLocation::SECTION::REGS, ConRegs::LOCATION::REG_1))));
+                ConLocation(ConLocation::SECTION::REGS, ConRegs::LOCATION::REG_1)));
 
         auto condition_ops = std::make_shared<std::vector<std::shared_ptr<ConOp>>>();
         std::vector<ConLocation> no_args;
         std::vector<ConLocation> no_returns;
-        condition_ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpCall>(
-                ConLocation(ConLocation::SECTION::REGS, ConRegs::LOCATION::REG_1), no_args, no_returns)
-                ));
+        condition_ops->push_back(std::make_shared<ConOpCall>(ConLocation(ConLocation::SECTION::REGS, ConRegs::LOCATION::REG_1), no_args, no_returns));
 
-        ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpCondition>(condition_ops)));
+        ops->push_back(std::make_shared<ConOpCondition>(condition_ops));
 
         auto func = std::make_shared<ConFunction>(ops, init_data, 0, 1, 0);
         default_state_scope_functions->emplace(EVENT_FRAME_CALLBACK, func);
@@ -96,63 +94,77 @@ static std::shared_ptr<ConFunction> get_handler_func(int new_state_index,
         auto ops = std::make_shared<std::vector<std::shared_ptr<ConOp>>>();
         auto if_ops = std::make_shared<std::vector<std::shared_ptr<ConOp>>>();
         auto else_ops = std::make_shared<std::vector<std::shared_ptr<ConOp>>>();
-        ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpMove>(
+        ops->push_back(std::make_shared<ConOpMove>(
                 ConLocation(ConLocation::CONSTS, is_time_relative),
                 ConLocation(ConLocation::REGS, ConRegs::CONDITION)
-                )));
+                ));
 
-        if_ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpEnterScope>(
+        if_ops->push_back(std::make_shared<ConOpEnterScope>(
                 ConLocation(ConLocation::STACK, std::wstring(L"animation_logical"))
-                )));
-        if_ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpMove>(
+                ));
+        if_ops->push_back(std::make_shared<ConOpMove>(
                 ConLocation(ConLocation::STACK, std::wstring(L"time_in_frame")),
                 ConLocation(ConLocation::REGS, ConRegs::REG_2)
-                )));
-        if_ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpExitScope>(
+                ));
+        if_ops->push_back(std::make_shared<ConOpExitScope>(
 
-                )));
-        else_ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpMove>(
+                ));
+        else_ops->push_back(std::make_shared<ConOpMove>(
                 ConLocation(ConLocation::CONSTS, 0),
                 ConLocation(ConLocation::REGS, ConRegs::REG_2)
-                )));
-        ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpCondition>(if_ops, else_ops)));
+                ));
+        ops->push_back(std::make_shared<ConOpCondition>(if_ops, else_ops));
 
-        ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpEnterWeakScope>(
+        ops->push_back(std::make_shared<ConOpEnterWeakScope>(
                 ConLocation(ConLocation::STACK, std::wstring(L"parent_sprite"))
-        )));
-        ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpMove>(
+        ));
+
+        ops->push_back(std::make_shared<ConOpEnterWeakScope>(
+                ConLocation(ConLocation::STACK, std::wstring(L"parent_component"))
+        ));
+        ops->push_back(std::make_shared<ConOpMove>(
+                ConLocation(ConLocation::STACK, std::wstring(L"current")),
+                ConLocation(ConLocation::STACK, std::wstring(L"last_time"))
+                ));
+        ops->push_back(std::make_shared<ConOpMove>(
+                ConLocation(ConLocation::STACK, std::wstring(L"last_time")),
+                ConLocation(ConLocation::STACK, std::wstring(L"current"))
+                ));
+        ops->push_back(std::make_shared<ConOpExitScope>());
+
+        ops->push_back(std::make_shared<ConOpMove>(
                 ConLocation(ConLocation::CONSTS, new_state_index),
                 ConLocation(ConLocation::STACK, std::wstring(L"current_state_index"))
-        )));
-        ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpVectorGet>(
+        ));
+        ops->push_back(std::make_shared<ConOpVectorGet>(
                 ConLocation(ConLocation::STACK, std::wstring(L"states_logicals")),
                 ConLocation(ConLocation::CONSTS, new_state_index),
                 ConLocation(ConLocation::REGS, ConRegs::REG_1)
-                )));
-        ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpEnterScope>(
+                ));
+        ops->push_back(std::make_shared<ConOpEnterScope>(
                 ConLocation(ConLocation::REGS, ConRegs::REG_1)
-                )));
-        ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpEnterScope>(
+                ));
+        ops->push_back(std::make_shared<ConOpEnterScope>(
                 ConLocation(ConLocation::STACK, std::wstring(L"animation_logical"))
-                )));
-        ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpMove>(
+                ));
+        ops->push_back(std::make_shared<ConOpMove>(
                 ConLocation(ConLocation::CONSTS, frame_index),
                 ConLocation(ConLocation::STACK, std::wstring(L"frame_index"))
-                )));
-        ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpAdd>(
+                ));
+        ops->push_back(std::make_shared<ConOpAdd>(
                 ConLocation(ConLocation::REGS, ConRegs::REG_2),
                 ConLocation(ConLocation::CONSTS, new_time),
                 ConLocation(ConLocation::REGS, ConRegs::REG_2)
-                )));
-        ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpMove>(
+                ));
+        ops->push_back(std::make_shared<ConOpMove>(
                 ConLocation(ConLocation::REGS, ConRegs::REG_2),
                 ConLocation(ConLocation::STACK, std::wstring(L"time_in_frame"))
-                )));
+                ));
         if (StateReset::REMAIN != state_reset) {
-            ops->push_back(std::dynamic_pointer_cast<ConOp>(std::make_shared<ConOpMove>(
+            ops->push_back(std::make_shared<ConOpMove>(
                     ConLocation(ConLocation::CONSTS, StateReset::RESTART == state_reset),
                     ConLocation(ConLocation::STACK, std::wstring(L"is_running"))
-                    )));
+                    ));
         }
         auto func = std::make_shared<ConFunction>(ops, init_data, 0, 0, 0);
         handler_funcs[new_state_index] = func;

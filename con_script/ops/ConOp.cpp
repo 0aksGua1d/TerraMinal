@@ -2,7 +2,7 @@
 
 #include "logger/Logger.h"
 
-void ConScript::ConOp::execute(std::shared_ptr<Stack>& stack, std::vector<std::any>& arguments,
+void ConScript::ConOp::execute(std::shared_ptr<Stack>& stack, const std::vector<std::any>& arguments,
                                std::vector<std::any>& returns, std::vector<std::any>& variables,
                                ConScript::ConRegs& regs) {
     try {

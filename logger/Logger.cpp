@@ -24,7 +24,7 @@ void Logger::log(Log& log) {
         }
         log.extra["context"] = ss.str();
     }
-    for (auto[writer, formatter, filter] : Logger::writing_operations) {
+    for (auto&[writer, formatter, filter] : Logger::writing_operations) {
         if (filter->should_log(log)) {
             writer->write(formatter->format(log));
         }

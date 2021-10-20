@@ -3,7 +3,7 @@
 #include "ConCall.h"
 
 namespace ConScript {
-    void ConOpCall::inner_execute(std::shared_ptr<Stack>& stack, std::vector<std::any>& parent_func_args,
+    void ConOpCall::inner_execute(std::shared_ptr<Stack>& stack, const std::vector<std::any>& parent_func_args,
                             std::vector<std::any>& parent_func_returns,
                             std::vector<std::any>& variables, ConRegs& regs) {
         std::vector<std::any> func_args;

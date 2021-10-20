@@ -8,7 +8,9 @@ Component::Component(Position pos, const std::shared_ptr<Sprite>& sprite) : Logi
                                                                                     sprite->copy())) {
     SET_PTR(this, pos, pos);
     SET_PTR(this, tree, {});
-    SET_PTR(this, sprite_logical, std::dynamic_pointer_cast<Logical>(this->sprite));
+    SET_PTR(this, sprite_logical, this->sprite);
+    SET_PTR(this, current, std::chrono::system_clock::from_time_t(0));
+    SET_PTR(this, last_time, std::chrono::system_clock::from_time_t(0));
     old_pos.z += 1;
 }
 
@@ -46,14 +48,17 @@ void Component::removeCallback(const std::wstring& event_name) {
 
 void Component::draw(const std::shared_ptr<Screen>& screen) {
     if (nullptr != this->sprite) {
-        auto overall_change = std::chrono::duration_cast<std::chrono::microseconds>(this->current - this->last_time);
+        auto current = GET_PTR(this, current);
+        auto last_time = GET_PTR(this, last_time);
+        auto overall_change = std::chrono::duration_cast<std::chrono::microseconds>(current - last_time);
         bool needs_update = this->sprite->need_update(overall_change.count());
         bool pos_changed = this->hasPosChanged();
         if (needs_update || pos_changed) {
             this->sprite->erase(screen, this->old_pos, this->id);
             if (needs_update) {
                 this->sprite->update(overall_change.count());
-                this->last_time += overall_change;
+                last_time += overall_change;
+                SET_PTR(this, last_time, last_time);
             }
             this->sprite->draw(screen, GET_PTR(this, pos), this->id);
 
@@ -63,9 +68,9 @@ void Component::draw(const std::shared_ptr<Screen>& screen) {
 }
 
 void Component::update(chrono_time new_time) {
-    this->current = new_time;
-    if (std::chrono::system_clock::from_time_t(0) == this->last_time) {
-        this->last_time = new_time;
+    SET_PTR(this, current, new_time);
+    if (std::chrono::system_clock::from_time_t(0) == GET_PTR(this, last_time)) {
+        SET_PTR(this, last_time, new_time);
     }
 }
 

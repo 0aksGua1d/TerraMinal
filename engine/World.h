@@ -4,6 +4,8 @@
 
 #include "components/Scene.h"
 #include "components/Component.h"
+#include "io/controllers/InputControllerBase.h"
+
 #include "defines.h"
 
 enum class WORLD_FLAGS {
@@ -13,7 +15,7 @@ enum class WORLD_FLAGS {
 
 class World {
 public:
-	World() = default;
+    World(std::shared_ptr<InputManager>, std::map<std::wstring, std::shared_ptr<InputControllerBase>>);
 	World(const World&) = delete;
 	World& operator=(const World&) = delete;
 	World(World&&) = default;
@@ -32,4 +34,7 @@ public:
 private:
     std::shared_ptr<Scene> current_scene;
     std::map<std::wstring, std::shared_ptr<Scene>> scenes;
+
+    std::map<std::wstring, std::shared_ptr<InputControllerBase>> input_controllers;
+    std::shared_ptr<InputManager> input_manager;
 };

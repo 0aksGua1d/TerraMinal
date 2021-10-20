@@ -22,8 +22,8 @@ namespace ConScript {
 
         ConLocation(SECTION section, std::any value) : section(section), indexer(std::move(value)) {}
 
-        std::any get_value(ConRegs& regs, std::vector<std::any>& variables, std::vector<std::any>& arguments, std::vector<std::any>& returns, std::shared_ptr<Stack>& stack);
-        void set_value(ConRegs& regs, std::vector<std::any>& variables, std::vector<std::any>& arguments, std::vector<std::any>& returns, std::shared_ptr<Stack>& stack, const std::any& value);
+        std::any get_value(ConRegs& regs, std::vector<std::any>& variables, const std::vector<std::any>& arguments, std::vector<std::any>& returns, std::shared_ptr<Stack>& stack);
+        void set_value(ConRegs& regs, std::vector<std::any>& variables, const std::vector<std::any>& arguments, std::vector<std::any>& returns, std::shared_ptr<Stack>& stack, const std::any& value);
 
     private:
         SECTION section;
@@ -33,7 +33,7 @@ namespace ConScript {
         std::any get_value_regs(ConRegs& regs);
         std::any get_value_variables(std::vector<std::any>& variables);
         std::any get_value_const();
-        std::any get_value_arguments(std::vector<std::any>& arguments);
+        std::any get_value_arguments(const std::vector<std::any>& arguments);
         std::any get_value_returns(std::vector<std::any>& returns);
         std::any get_value_stack(std::shared_ptr<Stack>& stack);
 

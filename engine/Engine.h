@@ -6,7 +6,7 @@
 
 class Engine {
 public:
-	Engine(float fps = 60.0f);
+	Engine(std::shared_ptr<InputManager>, std::map<std::wstring, std::shared_ptr<InputControllerBase>>, float fps = 60.0f);
 	Engine(const Engine&) = delete;
 	Engine& operator=(const Engine&) = delete;
 	Engine(Engine&&) = delete;

@@ -5,7 +5,7 @@
 #include "con_script/Logical.h"
 
 namespace ConScript {
-    void ConOpEnterWeakScope::inner_execute(std::shared_ptr<Stack>& stack, std::vector<std::any>& arguments,
+    void ConOpEnterWeakScope::inner_execute(std::shared_ptr<Stack>& stack, const std::vector<std::any>& arguments,
                                       std::vector<std::any>& returns,
                                       std::vector<std::any>& variables, ConRegs& regs) {
         auto new_logical = std::any_cast<std::weak_ptr<Logical>>(

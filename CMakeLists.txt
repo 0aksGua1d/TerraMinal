@@ -34,7 +34,12 @@ set(components_sources components/Component.cpp components/Scene.cpp)
 set(logger_sources logger/Logger.cpp logger/log_filter/TrueLogFilter.cpp logger/log_filter/LambdaLogFilter.cpp
         logger/log_formatter/LineLogFormatter.cpp logger/log_writer/FileLogWriter.cpp)
 
-set(engine_sources engine/Screen.cpp engine/Engine.cpp engine/World.cpp con_script/ConLocation.cpp ${logger_sources} utils/string_converter.h exceptions/con_script/stack_exception.h utils/IdGenerator.h)
+set(io_sources io/InputManager.cpp io/managers/focus/FocusInputManager.cpp io/managers/InputManagerBase.cpp
+        io/managers/keyboard/KeyboardInputManager.cpp io/collectors/windows/WindowsConsoleInputCollector.cpp
+        io/collectors/InputCollectorBase.cpp io/controllers/windows/WindowsKeyboardInputController.cpp
+        io/controllers/windows/WindowsMouseInputController.cpp io/managers/ManagerNames.cpp io/collectors/windows/KeyboardMapping.cpp)
+
+set(engine_sources ${io_sources} engine/Screen.cpp engine/Engine.cpp engine/World.cpp con_script/ConLocation.cpp ${logger_sources} utils/string_converter.h exceptions/con_script/stack_exception.h utils/IdGenerator.h io/managers/keyboard/KeyState.h io/controllers/windows/WindowsKeyboardInputController.h)
 
 include_directories(.)
 

@@ -21,7 +21,7 @@ bool Animation::need_update(size_t dTimeMilli) const {
 }
 
 void Animation::update(size_t dTimeMilli) {
-    size_t time_in_frame = GET_PTR(this, time_in_frame);
+    int time_in_frame = GET_PTR(this, time_in_frame);
     bool is_repeating = GET_PTR(this, is_repeating);
     int index = GET_PTR(this, frame_index);
 

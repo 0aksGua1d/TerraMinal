@@ -14,7 +14,7 @@ namespace ConScript {
         ConFunction(std::shared_ptr<std::vector<std::shared_ptr<ConOp>>> ops, std::vector<std::any> init_static_data,
                     size_t extra_vars, size_t arguments_count, size_t return_count);
 
-        void call(std::vector<std::any>& arguments, std::vector<std::any>& returns, std::shared_ptr<Stack> stack);
+        void call(const std::vector<std::any>& arguments, std::vector<std::any>& returns, std::shared_ptr<Stack> stack);
 
 //    private:
         static IdGenerator generator;

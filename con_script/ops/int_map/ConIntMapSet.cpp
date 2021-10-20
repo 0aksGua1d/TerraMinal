@@ -1,7 +1,7 @@
 #include "ConIntMapSet.h"
 
 namespace ConScript {
-    void ConOpIntMapSet::inner_execute(std::shared_ptr<Stack>& stack, std::vector<std::any>& arguments, std::vector<std::any>& returns,
+    void ConOpIntMapSet::inner_execute(std::shared_ptr<Stack>& stack, const std::vector<std::any>& arguments, std::vector<std::any>& returns,
                                  std::vector<std::any>& variables, ConRegs& regs) {
         try {
             auto index = std::any_cast<int>(this->index_loc.get_value(regs, variables, arguments, returns, stack));

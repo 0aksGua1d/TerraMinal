@@ -1,7 +1,11 @@
 #include <windows.h>
 #include <iostream>
-#include <vector>
 #include <chrono>
+
+#include "io/collectors/windows/WindowsConsoleInputCollector.h"
+#include "io/managers/ManagerNames.h"
+#include "io/managers/keyboard/KeyboardInputManager.h"
+#include "io/managers/focus/FocusInputManager.h"
 #include "con_script/ops/control/ConMove.h"
 #include "renderable/Frame.h"
 #include "renderable/Animation.h"
@@ -23,9 +27,17 @@ int main() {
     Logger::add_writing_operation(std::make_shared<FileLogWriter>("logs.txt"),
                                   std::make_shared<LineLogFormatter>(),
                                   std::make_shared<TrueLogFilter>());
-    Logger::info("Starting game");
+    Logger::info("Starting game", {
+        {"Mode set", std::to_string(SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), ENABLE_MOUSE_INPUT | ENABLE_WINDOW_INPUT | ENABLE_EXTENDED_FLAGS))}
+    });
     auto start = std::chrono::high_resolution_clock::now();
-    auto engine = std::make_shared<Engine>();
+    auto input_manager = std::make_shared<InputManager>();
+    auto keyboard_manager = std::make_shared<KeyboardInputManager>();
+    input_manager->register_manager(ManagerNames::KEYBOARD_TYPE, keyboard_manager);
+    input_manager->register_manager(ManagerNames::FOCUS_TYPE, std::make_shared<FocusInputManager>());
+    input_manager->register_collector("a", std::make_shared<WindowsConsoleInputCollector>(input_manager));
+    input_manager->enable_collector("a");
+    auto engine = std::make_shared<Engine>(input_manager, std::map<std::wstring, std::shared_ptr<InputControllerBase>>{});
     auto loader = std::make_shared<Loader>();
     loader->load_sprites("test_sprite.tms");
     auto scene = std::make_shared<Scene>(loader);
@@ -33,14 +45,11 @@ int main() {
         for (int j = 0; j < 13; ++j) {
             auto id = scene->createComponent(Position({i * 8 + 1, 1 + j * 4}), L"Testing");
             auto comp = scene->getComponent(id);
-            auto sprite = GET_PTR(comp, sprite_logical);
-            auto states_logicals = std::any_cast<std::vector<std::any>>(
-                    sprite->local_scope->variables.at(L"states_logicals"));
-            auto first_state = std::any_cast<std::shared_ptr<Logical>>(states_logicals[0]);
-            auto animation = std::any_cast<std::shared_ptr<Logical>>(
-                    first_state->local_scope->variables.at(L"animation_logical"));
-            int k = 900000 - ((i * 3 + j) * 10000);
-            animation->local_scope->variables[L"time_in_frame"] = k;
+            auto sprite = (Sprite*)(GET_PTR(comp, sprite_logical).get());
+            auto states_logicals = GET_PTR(sprite, states_logicals);
+            auto current_state_index = GET_PTR(sprite, current_state_index);
+            auto first_state = std::any_cast<std::shared_ptr<Logical>>(states_logicals[current_state_index]);
+            keyboard_manager->add_listener(L"space", first_state->local_scope->functions->at(L"start"), std::make_shared<ConScript::Stack>(first_state->local_scope));
         }
     }
     engine->world->add_scene(L"main", scene);

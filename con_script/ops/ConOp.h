@@ -12,12 +12,12 @@ namespace ConScript {
     class ConOp {
     public:
         virtual void
-        execute(std::shared_ptr<Stack>& stack, std::vector<std::any>& arguments, std::vector<std::any>& returns, std::vector<std::any>& variables,
+        execute(std::shared_ptr<Stack>& stack, const std::vector<std::any>& arguments, std::vector<std::any>& returns, std::vector<std::any>& variables,
                 ConRegs& regs);
 
     protected:
         virtual void
-        inner_execute(std::shared_ptr<Stack>& stack, std::vector<std::any>& arguments, std::vector<std::any>& returns, std::vector<std::any>& variables,
+        inner_execute(std::shared_ptr<Stack>& stack, const std::vector<std::any>& arguments, std::vector<std::any>& returns, std::vector<std::any>& variables,
                 ConRegs& regs) = 0;
         virtual ConOpType get_type() = 0;
     };

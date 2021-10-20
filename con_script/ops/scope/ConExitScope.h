@@ -8,7 +8,7 @@ namespace ConScript {
     public:
         ConOpExitScope() = default;
     protected:
-        void inner_execute(std::shared_ptr<Stack>& stack, std::vector<std::any>& arguments, std::vector<std::any>& returns, std::vector<std::any>& variables,
+        void inner_execute(std::shared_ptr<Stack>& stack, const std::vector<std::any>& arguments, std::vector<std::any>& returns, std::vector<std::any>& variables,
                      ConRegs& regs) override;
         ConOpType get_type() override;
 

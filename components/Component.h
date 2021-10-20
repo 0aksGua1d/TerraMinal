@@ -40,14 +40,14 @@ protected:
 
 private:
 	size_t id;
-	chrono_time last_time = std::chrono::system_clock::from_time_t(0);
-	chrono_time current = std::chrono::system_clock::from_time_t(0);
 	Position old_pos;
 	std::shared_ptr<Sprite> sprite;
 
     PROPERTY(Position , pos);
     PROPERTY(std::shared_ptr<Logical>, sprite_logical);
     PROPERTY((std::map<std::wstring, unsigned long>), tree);
+    PROPERTY(chrono_time, last_time);
+    PROPERTY(chrono_time, current);
 
     std::weak_ptr<Component> parent;
 };

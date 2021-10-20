@@ -2,7 +2,13 @@
 
 #include <utility>
 
+World::World(std::shared_ptr<InputManager> input_manager,
+             std::map<std::wstring, std::shared_ptr<InputControllerBase>> input_controllers) :
+        input_manager(std::move(input_manager)),
+        input_controllers(std::move(input_controllers)) {}
+
 void World::update(chrono_time new_time) {
+    this->input_manager->update(new_time);
     if (nullptr != this->current_scene) {
         this->current_scene->update(new_time);
     }

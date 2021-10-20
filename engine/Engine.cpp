@@ -1,9 +1,11 @@
 #include "Engine.h"
 #include "defines.h"
 
-Engine::Engine(float wanted_fps) : wanted_fps(wanted_fps),
+Engine::Engine(std::shared_ptr<InputManager> input_manager,
+               std::map<std::wstring, std::shared_ptr<InputControllerBase>> input_controllers,
+               float wanted_fps) : wanted_fps(wanted_fps),
                                    screen(std::make_shared<Screen>()),
-                                   world(std::make_shared<World>()),
+                                   world(std::make_shared<World>(std::move(input_manager), std::move(input_controllers))),
                                    is_running(false) {
 }
 
