@@ -12,6 +12,8 @@ static const std::wstring EVENT_DOWN(L"down");
 
 class KeyboardInputManager : public InputManagerBase {
 public:
+    KeyboardInputManager();
+
     void handle_event(const std::map<std::wstring, std::any>& event_data) override;
 
     [[nodiscard]] std::any get_state(const std::wstring& key) const override;

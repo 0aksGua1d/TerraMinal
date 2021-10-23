@@ -4,8 +4,10 @@
 #include "io/managers/ManagerNames.h"
 #include "KeyboardGestures.h"
 
-#include "utils/string_converter.h"
 
+KeyboardInputManager::KeyboardInputManager() {
+    SET_PTR(this, states, {});
+}
 
 std::string KeyboardInputManager::get_name() const {
     return ManagerNames::KEYBOARD_TYPE;
@@ -27,10 +29,6 @@ void KeyboardInputManager::handle_event(const std::map<std::wstring, std::any>& 
         const auto key = std::any_cast<std::wstring>(event_data.at(EVENT_KEY));
         const auto down = std::any_cast<bool>(event_data.at(EVENT_DOWN));
         const auto state = std::any_cast<KeyEventFlags>(event_data.at(EVENT_STATE));
-        Logger::debug("Key press", {
-            {"key", string_converter.to_bytes(key)},
-            {"down", std::to_string(down)},
-            });
         const bool& held = down && (!std::any_cast<KeyState>(this->get_state(key)).is_down);
         const std::wstring gesture = down
                                     ? (
@@ -45,7 +43,11 @@ void KeyboardInputManager::handle_event(const std::map<std::wstring, std::any>& 
             std::vector<std::any> callback_args{key, down, gesture, state};
             std::vector<std::any> returns{};
             for (auto&[id, listener] : key_listeners->second) {
-                listener.func->call(callback_args, returns, listener.stack);
+                try {
+                    listener.func->call(callback_args, returns, listener.stack);
+                } catch (const std::bad_any_cast&) {
+                    Logger::error("Bad func call");
+                }
             }
         }
         auto states = GET_PTR(this, states);
